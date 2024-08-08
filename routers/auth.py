@@ -13,13 +13,16 @@ from database import SessionLocal, engine
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
+from dotenv import load_dotenv
+import os
 
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+load_dotenv()
 
-SECRET_KEY = "KlgH6AzYDeZeGwD288to79I3vTHT8wp7"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 
 templates = Jinja2Templates(directory="templates")
 
@@ -82,7 +85,7 @@ def create_access_token(username: str, user_id: int,
 
     encode = {"sub": username, "id": user_id}
     if expires_delta:
-        expires = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     encode.update({"exp": expire})
